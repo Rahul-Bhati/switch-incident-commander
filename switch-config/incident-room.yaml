@@ -1,0 +1,45 @@
+# Switch Console Configuration: Incident Command Center
+# Load this file in Switch Console to connect the Log Agent to the incident room.
+
+version: "1.0"
+
+agents:
+  - id: "log-agent"
+    name: "Log Agent"
+    description: "AI-powered Incident Response Agent that pulls Sentry stack traces and diagnoses root causes using Google Gemini."
+    endpoint: "http://localhost:3000/api/agent"
+    protocol: "http"
+    method: "POST"
+    headers:
+      Content-Type: "application/json"
+    timeout: 30000
+    capabilities:
+      - "sentry-investigation"
+      - "stack-trace-analysis"
+      - "root-cause-diagnosis"
+    metadata:
+      role: "incident-commander"
+      avatar: "🚨"
+
+rooms:
+  - id: "incident-command-center"
+    name: "incident-command-center"
+    title: "Incident Command Center"
+    description: "Triage room for real-time production outage monitoring and incident response."
+    participants:
+      - id: "operator"
+        role: "user"
+        name: "Incident Operator"
+      - id: "log-agent"
+        role: "agent"
+        name: "Log Agent"
+    triggers:
+      - type: "all_messages"
+        target: "log-agent"
+    channels:
+      slack:
+        enabled: true
+        channel_name: "#incident-command-center"
+      teams:
+        enabled: true
+        channel_name: "Incident Response"
